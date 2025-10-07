@@ -1,0 +1,80 @@
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+
+
+body {
+    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: linear-gradient(180deg,#667eea,#764ba2);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  flex-shrink: 0;
+  height: 100vh;
+}
+
+.sidebar .brand { font-size:1.5rem; margin-bottom:40px; font-weight:bold; }
+.sidebar .nav-links { display:flex; flex-direction:column; gap:15px; flex:1; }
+
+.sidebar .nav-links a {
+  color:#fff;
+  text-decoration:none;
+  font-weight:500;
+  padding:8px 12px;
+  border-radius:8px;
+  transition: background 0.3s;
+}
+.sidebar .nav-links a:hover,
+.sidebar .nav-links a.active { background: rgba(255,255,255,0.2); }
+
+/* Logout button */
+#logout-btn {
+  background:#ff4b5c;
+  text-align:center;
+  padding:10px 0;
+  font-weight:600;
+  border-radius:8px;
+  margin-top:10px;
+  transition: background 0.3s;
+}
+#logout-btn:hover { background:#e03e50; }
+
+/* Main content */
+.main-content { flex: 1; padding: 30px; overflow-y: auto; }
+.header h1 { font-size: 2rem; color: #333; margin-bottom: 25px; }
+
+/* Budget cards */
+.budget-cards { display: flex; flex-wrap: wrap; gap: 20px; }
+.budget-card {
+    flex: 1; min-width: 220px;
+    background: linear-gradient(145deg,#fff,#f7f7f7);
+    border-radius: 20px; padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.budget-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+.budget-card h3 { font-size: 1.2rem; color: #333; margin-bottom: 10px; }
+.budget-card p { color: #555; margin-bottom: 10px; }
+.budget-card label { display: block; margin-bottom: 10px; font-weight: 500; }
+.budget-card input { width: 100%; padding: 5px 8px; border-radius: 6px; border: 1px solid #ccc; }
+
+/* Progress bar */
+.progress-bar { width: 100%; height: 12px; background: #e0e0e0; border-radius: 10px; overflow: hidden; }
+.progress-bar .progress { height: 100%; background: #764ba2; border-radius: 10px; transition: width 0.3s; }
+
+/* Responsive */
+@media(max-width:768px){
+    .sidebar { width: 60px; padding: 20px 10px; }
+    .sidebar .brand { display: none; }
+    .sidebar .nav-links a { padding: 8px 6px; font-size: 0.9rem; }
+    .budget-cards { flex-direction: column; }
+    .budget-card { width: 100%; margin-bottom: 20px; }
+}

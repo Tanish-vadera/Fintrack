@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrack - Budget Planner</title>
+  <link rel="stylesheet" href="budget.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">💰 FinTrack</div>
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="add-transaction.html">Add Transaction</a>
+      <a href="reports.html">Reports</a>
+      <a href="budget.html" class="active">Budget Planner</a>
+      <a href="savings.html">Savings Goals</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help / Support</a>
+
+      <div style="flex:1"></div>
+
+      <a href="#" id="logout-btn">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+      <header class="header">
+          <h1>Budget Planner</h1>
+      </header>
+
+      <section class="content">
+          <div class="budget-cards" id="budget-cards">
+              <!-- Dynamic budget cards will render here -->
+          </div>
+      </section>
+  </main>
+
+  <script src="budget.js">
+
+    
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+/* Reset */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+
+body {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  background: #f0f2f5;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: linear-gradient(180deg,#667eea,#764ba2);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  flex-shrink: 0;
+  height: 100vh;
+}
+
+.sidebar .brand { font-size:1.5rem; margin-bottom:40px; font-weight:bold; }
+.sidebar .nav-links { display:flex; flex-direction:column; gap:15px; flex:1; }
+
+.sidebar .nav-links a {
+  color:#fff;
+  text-decoration:none;
+  font-weight:500;
+  padding:8px 12px;
+  border-radius:8px;
+  transition: background 0.3s;
+}
+.sidebar .nav-links a:hover,
+.sidebar .nav-links a.active { background: rgba(255,255,255,0.2); }
+
+/* Logout button */
+#logout-btn {
+  background:#ff4b5c;
+  text-align:center;
+  padding:10px 0;
+  font-weight:600;
+  border-radius:8px;
+  margin-top:10px;
+  transition: background 0.3s;
+}
+#logout-btn:hover { background:#e03e50; }
+
+/* Main content */
+.main-content {
+  flex:1;
+  padding:30px;
+  overflow-y:auto;
+}
+
+/* Header */
+.header h1 { font-size:2rem; margin-bottom:25px; color:#333; }
+
+/* Cards */
+.cards { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:30px; }
+.card {
+  flex:1;
+  min-width:180px;
+  background:linear-gradient(145deg,#fff,#f7f7f7);
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  transition:transform 0.3s, box-shadow 0.3s;
+}
+.card:hover { transform: translateY(-5px); box-shadow:0 15px 35px rgba(0,0,0,0.2); }
+.card h3 { font-size:1rem; color:#555; margin-bottom:10px; }
+.card p { font-size:1.5rem; font-weight:bold; color:#764ba2; }
+
+/* Table */
+table { width:100%; border-collapse: collapse; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.1); }
+th,td { padding:12px 15px; text-align:left; border-bottom:1px solid #eee; color:#555; }
+th { background:#f7f7f7; font-weight:600; }
+tr:hover { background:#f0f0f0; transform:scale(1.01); transition: all 0.2s ease; }
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar { width:60px; padding:20px 10px; }
+  .sidebar .brand { display:none; }
+  .sidebar .nav-links a { padding:8px 6px; font-size:0.9rem; }
+  .cards { flex-direction:column; }
+}

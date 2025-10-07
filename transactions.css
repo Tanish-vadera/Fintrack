@@ -1,0 +1,160 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: #f0f2f5;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: linear-gradient(180deg,#667eea,#764ba2);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  flex-shrink: 0;
+  height: 100vh;
+}
+
+.sidebar .brand { font-size:1.5rem; margin-bottom:40px; font-weight:bold; }
+.sidebar .nav-links { display:flex; flex-direction:column; gap:15px; flex:1; }
+
+.sidebar .nav-links a {
+  color:#fff;
+  text-decoration:none;
+  font-weight:500;
+  padding:8px 12px;
+  border-radius:8px;
+  transition: background 0.3s;
+}
+.sidebar .nav-links a:hover,
+.sidebar .nav-links a.active { background: rgba(255,255,255,0.2); }
+
+/* Logout button */
+#logout-btn {
+  background:#ff4b5c;
+  text-align:center;
+  padding:10px 0;
+  font-weight:600;
+  border-radius:8px;
+  margin-top:10px;
+  transition: background 0.3s;
+}
+#logout-btn:hover { background:#e03e50; }
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+  margin-left: 10px;
+  overflow-y: auto;
+}
+
+.header h1 {
+  font-size: 2rem;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* Transactions Table */
+.content h2 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.content th,
+.content td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.content th {
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.content tr:hover {
+  background: #f0f0f0;
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+/* Delete Button */
+.delete-btn {
+  background: #ff4b5c;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+.delete-btn:hover {
+  background: #e03e50;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 70px;
+    padding: 20px 10px;
+  }
+  .sidebar .brand {
+    display: none;
+  }
+  .sidebar .nav-links a {
+    padding: 8px 6px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  .main-content {
+    margin-left: 70px;
+    padding: 20px;
+  }
+  .content table,
+  .content thead,
+  .content tbody,
+  .content th,
+  .content td,
+  .content tr {
+    display: block;
+  }
+  .content tr {
+    margin-bottom: 15px;
+  }
+  .content td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+  .content td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: 45%;
+    font-weight: bold;
+    text-align: left;
+    color: #333;
+  }
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrack - Transactions</title>
+  <link rel="stylesheet" href="transactions.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">💰 FinTrack</div>
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="transactions.html" class="active">Transactions</a>
+      <a href="add-transaction.html">Add Transaction</a>
+      <a href="reports.html">Reports</a>
+      <a href="budget.html">Budget Planner</a>
+      <a href="savings.html">Savings Goals</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help / Support</a>
+
+      <div style="flex:1"></div>
+      <a href="logout.php" id="logout-btn">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="header">
+      <h1>All Transactions</h1>
+    </header>
+    <section class="content">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Type</th>
+            <th>Amount (₹)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="transaction-body">
+          <!-- Transactions will be loaded dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    async function loadTransactions() {
+      try {
+        const res = await fetch('save_transaction.php?action=get');
+        const data = await res.json();
+
+        if (data.status === "success") {
+          const tbody = document.getElementById("transaction-body");
+          tbody.innerHTML = "";
+
+          if (data.transactions.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='7'>No transactions found.</td></tr>";
+            return;
+          }
+
+          data.transactions.forEach(tx => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${tx.id}</td>
+              <td>${tx.date}</td>
+              <td>${tx.description}</td>
+              <td>${tx.category}</td>
+              <td>${tx.type}</td>
+              <td style="color:${tx.type === 'Expense' ? 'red' : 'green'}">
+                ${tx.type === 'Expense' ? '-' : '+'}₹${tx.amount}
+              </td>
+              <td><button class="delete-btn" data-id="${tx.id}">Delete</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
+
+          // Add delete button listeners
+          document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              if (confirm('Are you sure you want to delete this transaction?')) {
+                await deleteTransaction(id);
+              }
+            });
+          });
+        }
+      } catch (error) {
+        console.error('Error loading transactions:', error);
+      }
+    }
+
+    async function deleteTransaction(id) {
+      try {
+        const res = await fetch(`save_transaction.php?action=delete&id=${id}`);
+        const data = await res.json();
+
+        if (data.status === "success") {
+          alert("Transaction deleted successfully!");
+          loadTransactions(); // reload list
+        } else {
+          alert("Failed to delete transaction.");
+        }
+      } catch (err) {
+        console.error('Delete error:', err);
+      }
+    }
+
+    // Load on page start
+    loadTransactions();
+  </script>
+</body>
+</html>

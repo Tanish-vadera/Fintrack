@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrack - Reports</title>
+  <link rel="stylesheet" href="reports.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+ <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">💰 FinTrack</div>
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="add-transaction.html">Add Transaction</a>
+      <a href="reports.html" class="active" >Reports</a>
+      <a href="budget.html">Budget Planner</a>
+      <a href="savings.html">Savings Goals</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help / Support</a>
+
+      <div style="flex:1"></div> <!-- Spacer -->
+
+      <a href="#" id="logout-btn">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+      <header class="header">
+          <h1>Reports</h1>
+      </header>
+
+      <section class="content">
+          <div class="cards">
+              <div class="card">
+                  <h3>Monthly Spending</h3>
+                  <canvas id="monthlySpendingChart"></canvas>
+              </div>
+              <div class="card">
+                  <h3>Income vs Expenses</h3>
+                  <canvas id="incomeExpenseChart"></canvas>
+              </div>
+              <div class="card">
+                  <h3>Category Wise</h3>
+                  <canvas id="categoryChart"></canvas>
+              </div>
+          </div>
+
+          <h2>Summary</h2>
+          <table>
+              <thead>
+                  <tr><th>Category</th><th>Amount</th><th>Percentage</th></tr>
+              </thead>
+              <tbody id="summary-table">
+                  <!-- dynamically filled -->
+              </tbody>
+          </table>
+      </section>
+  </main>
+
+  <script>
+    function renderReports() {
+        const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+
+        if(transactions.length === 0) return;
+
+        // Group by month for monthly spending
+        const monthlyMap = {};
+        transactions.forEach(t => {
+            const month = new Date(t.date).toLocaleString('default', { month: 'short', year: 'numeric' });
+            if(!monthlyMap[month]) monthlyMap[month] = 0;
+            monthlyMap[month] += t.type === "Expense" ? Number(t.amount) : 0;
+        });
+        const months = Object.keys(monthlyMap);
+        const monthlyData = Object.values(monthlyMap);
+
+        // Group income vs expense
+        const totalIncome = transactions.filter(t => t.type === "Income").reduce((sum, t) => sum + Number(t.amount), 0);
+        const totalExpense = transactions.filter(t => t.type === "Expense").reduce((sum, t) => sum + Number(t.amount), 0);
+
+        // Group by category
+        const categoryMap = {};
+        transactions.forEach(t => {
+            if(!categoryMap[t.category]) categoryMap[t.category] = 0;
+            categoryMap[t.category] += Number(t.amount);
+        });
+        const categories = Object.keys(categoryMap);
+        const categoryData = Object.values(categoryMap);
+
+        // Populate Summary table
+        const summaryTbody = document.getElementById("summary-table");
+        summaryTbody.innerHTML = "";
+        categories.forEach(cat => {
+            const amount = categoryMap[cat];
+            const percentage = ((amount / totalExpense) * 100).toFixed(1);
+            summaryTbody.innerHTML += `<tr>
+                <td>${cat}</td>
+                <td>₹${amount}</td>
+                <td>${percentage}%</td>
+            </tr>`;
+        });
+
+        // Render Charts using Chart.js
+        const monthlyCtx = document.getElementById('monthlySpendingChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: { labels: months, datasets: [{ label: 'Expenses', data: monthlyData, backgroundColor: '#764ba2' }] }
+        });
+
+        const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
+        new Chart(incomeExpenseCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Income', 'Expenses'],
+                datasets: [{
+                    data: [totalIncome, totalExpense],
+                    backgroundColor: ['#4caf50', '#f44336']
+                }]
+            }
+        });
+
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'pie',
+            data: {
+                labels: categories,
+                datasets: [{ data: categoryData, backgroundColor: categories.map((_, i) => `hsl(${i*60}, 70%, 50%)`) }]
+            }
+        });
+    }
+
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', () => {
+      if(confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        alert("Logged out successfully!");
+        window.location.href = "index.html";
+      }
+    });
+
+    renderReports();
+  </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrack - Settings</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">💰 FinTrack</div>
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="add-transaction.html">Add Transaction</a>
+      <a href="reports.html">Reports</a>
+      <a href="budget.html">Budget Planner</a>
+      <a href="savings.html">Savings Goals</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html"  class="active">Settings</a>
+      <a href="help.html">Help / Support</a>
+
+      <div style="flex:1"></div>
+
+      <a href="#" id="logout-btn">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="header">
+      <h1>Settings</h1>
+    </header>
+
+    <section class="content">
+      <!-- Profile Settings -->
+      <div class="settings-card">
+        <h2>Profile</h2>
+        <form id="profile-form">
+          <label>Name</label>
+          <input type="text" id="name" placeholder="Enter your name">
+
+          <label>Email</label>
+          <input type="email" id="email" placeholder="Enter your email">
+
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Enter new password">
+
+          <button type="submit" class="btn">Update Profile</button>
+        </form>
+      </div>
+
+      <!-- Theme Settings -->
+      <div class="settings-card">
+        <h2>Theme</h2>
+        <div class="theme-options">
+          <button id="light-theme-btn">Light Mode</button>
+          <button id="dark-theme-btn">Dark Mode</button>
+        </div>
+      </div>
+
+      <!-- Notifications Settings -->
+      <div class="settings-card">
+        <h2>Notifications</h2>
+        <div class="notifications-options">
+          <label><input type="checkbox" id="notify-transactions"> Transaction Alerts</label>
+          <label><input type="checkbox" id="notify-budget"> Budget Alerts</label>
+          <label><input type="checkbox" id="notify-savings"> Savings Alerts</label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container"></div>
+
+  <script>
+    /* ----------------------
+       THEME
+    ---------------------- */
+    const lightBtn = document.getElementById('light-theme-btn');
+    const darkBtn = document.getElementById('dark-theme-btn');
+
+    function setTheme(theme){
+      localStorage.setItem('theme', theme);
+      document.body.className = theme;
+      showToast(`Theme switched to ${theme.charAt(0).toUpperCase() + theme.slice(1)}`);
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.className = savedTheme;
+
+    lightBtn.addEventListener('click', ()=>setTheme('light'));
+    darkBtn.addEventListener('click', ()=>setTheme('dark'));
+
+    /* ----------------------
+       PROFILE UPDATE
+    ---------------------- */
+    const profileForm = document.getElementById('profile-form');
+    profileForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const profile = { name, email, password };
+      localStorage.setItem('profile', JSON.stringify(profile));
+      showToast('Profile updated successfully!');
+      profileForm.reset();
+    });
+
+    const savedProfile = JSON.parse(localStorage.getItem('profile'));
+    if(savedProfile){
+      document.getElementById('name').value = savedProfile.name || '';
+      document.getElementById('email').value = savedProfile.email || '';
+    }
+
+    /* ----------------------
+       LOGOUT
+    ---------------------- */
+    document.getElementById('logout-btn').addEventListener('click', ()=>{
+      if(confirm('Are you sure you want to logout?')){
+        localStorage.clear();
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    /* ----------------------
+       TOAST NOTIFICATIONS
+    ---------------------- */
+    function showToast(message){
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(()=>toast.remove(),3000);
+    }
+
+    /* ----------------------
+       NOTIFICATIONS SETTINGS
+    ---------------------- */
+    const notifyTransactions = document.getElementById('notify-transactions');
+    const notifyBudget = document.getElementById('notify-budget');
+    const notifySavings = document.getElementById('notify-savings');
+
+    const savedNotifications = JSON.parse(localStorage.getItem('notifications')) || {};
+    notifyTransactions.checked = savedNotifications.transactions || false;
+    notifyBudget.checked = savedNotifications.budget || false;
+    notifySavings.checked = savedNotifications.savings || false;
+
+    function updateNotification(type, checked){
+      const notifications = JSON.parse(localStorage.getItem('notifications')) || {};
+      notifications[type] = checked;
+      localStorage.setItem('notifications', JSON.stringify(notifications));
+      showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} alerts ${checked ? 'enabled' : 'disabled'}`);
+    }
+
+    notifyTransactions.addEventListener('change', e=>updateNotification('transactions', e.target.checked));
+    notifyBudget.addEventListener('change', e=>updateNotification('budget', e.target.checked));
+    notifySavings.addEventListener('change', e=>updateNotification('savings', e.target.checked));
+  </script>
+</body>
+</html>

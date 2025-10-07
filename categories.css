@@ -1,0 +1,110 @@
+/* ------------------------------
+   Base & Layout
+--------------------------------*/
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }   
+
+body {
+    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: linear-gradient(180deg,#667eea,#764ba2);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  flex-shrink: 0;
+  height: 100vh;
+}
+
+.sidebar .brand { font-size:1.5rem; margin-bottom:40px; font-weight:bold; }
+.sidebar .nav-links { display:flex; flex-direction:column; gap:15px; flex:1; }
+
+.sidebar .nav-links a {
+  color:#fff;
+  text-decoration:none;
+  font-weight:500;
+  padding:8px 12px;
+  border-radius:8px;
+  transition: background 0.3s;
+}
+.sidebar .nav-links a:hover,
+.sidebar .nav-links a.active { background: rgba(255,255,255,0.2); }
+
+/* Logout button */
+#logout-btn {
+  background:#ff4b5c;
+  text-align:center;
+  padding:10px 0;
+  font-weight:600;
+  border-radius:8px;
+  margin-top:10px;
+  transition: background 0.3s;
+}
+#logout-btn:hover { background:#e03e50; }
+
+/* ------------------------------
+   Main Content
+--------------------------------*/
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+/* ------------------------------
+   Category Cards
+--------------------------------*/
+.category-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.category-card {
+    flex: 1;
+    min-width: 180px;
+    background: linear-gradient(145deg,#fff,#f7f7f7);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.category-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.category-card p {
+    color: #555;
+}
+
+/* ------------------------------
+   Responsive
+--------------------------------*/
+@media(max-width:768px){
+    .sidebar { width: 60px; padding: 20px 10px; }
+    .sidebar .brand { display: none; }
+    .sidebar .nav-links a { padding: 8px 6px; font-size: 0.9rem; }
+    .category-cards { flex-direction: column; }
+    .category-card { width: 100%; margin-bottom: 20px; }
+}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinTrack - Add Transaction</title>
+<link rel="stylesheet" href="add-transaction.css">
+<style>
+  /* Simple CSS for form & popup */
+  body { font-family: 'Segoe UI', sans-serif; background:#f0f2f5; margin:0; display:flex; }
+  .sidebar { width:220px; background:linear-gradient(180deg,#667eea,#764ba2); color:#fff; padding:30px 20px; height:100vh; }
+  .sidebar .brand { font-size:1.5rem; margin-bottom:40px; }
+  .sidebar .nav-links { display:flex; flex-direction:column; gap:15px; }
+  .sidebar .nav-links a { color:#fff; text-decoration:none; padding:8px 12px; border-radius:8px; }
+  .sidebar .nav-links a.active { background: rgba(255,255,255,0.2); }
+
+  .main-content { flex:1; padding:30px; overflow-y:auto; }
+  .header h1 { font-size:2rem; margin-bottom:25px; }
+
+  form { background:#fff; padding:20px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.1); display:flex; flex-direction:column; gap:15px; max-width:500px; }
+  label { font-weight:600; }
+  input, select { padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem; }
+  button { padding:10px; border:none; border-radius:8px; background:#667eea; color:#fff; font-weight:600; cursor:pointer; }
+  button:hover { background:#556cd6; }
+
+  /* Notification popup */
+  #popup {
+    position: fixed; bottom: 20px; right: 20px; background: #4BB543; color:#fff;
+    padding: 15px 20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    display: none; font-weight:600;
+  }
+</style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">💰 FinTrack</div>
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="add-transaction.html" class="active">Add Transaction</a>
+      <a href="reports.html">Reports</a>
+      <a href="budget.html">Budget Planner</a>
+      <a href="savings.html">Savings Goals</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help / Support</a>
+
+      <div style="flex:1"></div>
+
+      <a href="#" id="logout-btn">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Section -->
+  <main class="main-content">
+    <header class="header"><h1>Add Transaction</h1></header>
+    <section class="content">
+      <form id="transaction-form" action="save_transaction.php" method="POST">
+        <label>Date:</label>
+        <input type="date" name="date" required>
+
+        <label>Type:</label>
+        <select name="type" id="transaction-type" required>
+          <option value="">-- Select Type --</option>
+          <option value="Income">Income</option>
+          <option value="Expense">Expense</option>
+        </select>
+
+        <label>Category:</label>
+        <select name="category" id="category" required>
+          <option value="">-- Select Category --</option>
+        </select>
+
+        <label>Description:</label>
+        <input type="text" name="description" placeholder="Enter description" required>
+
+        <label>Amount:</label>
+        <input type="number" name="amount" step="0.01" placeholder="Enter amount" required>
+
+        <label>For Savings Goal:</label>
+        <select name="savings_goal" id="savings-goal">
+          <option value="None">None</option>
+        </select>
+
+        <button type="submit">Add Transaction</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="popup">Transaction Added Successfully!</div>
+
+  <script>
+    const typeSelect = document.getElementById('transaction-type');
+    const categorySelect = document.getElementById('category');
+    const savingsGoalSelect = document.getElementById('savings-goal');
+    const form = document.getElementById('transaction-form');
+    const popup = document.getElementById('popup');
+
+
+    // Example categories
+    const incomeCategories = ["Salary","Freelance","Investment","Other"];
+    const expenseCategories = ["Food","Rent","Entertainment","Utilities","Transportation","Other"];
+
+    // Populate savings goals
+    function populateSavingsGoals() {
+      const goals = JSON.parse(localStorage.getItem('savingsGoals')) || [];
+      savingsGoalSelect.innerHTML = '<option value="None">None</option>';
+      goals.forEach(goal => {
+        const opt = document.createElement('option');
+        opt.value = goal.name;
+        opt.textContent = goal.name;
+        savingsGoalSelect.appendChild(opt);
+      });
+    }
+
+    // Populate categories based on type
+    typeSelect.addEventListener('change', ()=>{
+      categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+      if(typeSelect.value === "Income"){
+        incomeCategories.forEach(cat=>{
+          const opt = document.createElement('option');
+          opt.value=cat; opt.textContent=cat;
+          categorySelect.appendChild(opt);
+        });
+      } else if(typeSelect.value === "Expense"){
+        expenseCategories.forEach(cat=>{
+          const opt = document.createElement('option');
+          opt.value=cat; opt.textContent=cat;
+          categorySelect.appendChild(opt);
+        });
+      }
+    });
+
+    // Load savings goals
+    populateSavingsGoals();
+
+    // Show success popup when PHP redirects back with success
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === '1') {
+      popup.style.display = 'block';
+      popup.textContent = "✅ Transaction Added Successfully!";
+      setTimeout(()=>popup.style.display='none',3000);
+    }
+
+    // Logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', () => {
+      if(confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        alert("Logged out successfully!");
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinTrack - Notifications</title>
+<link rel="stylesheet" href="notifications.css">
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background:#f0f2f5; margin:0; display:flex; }
+  .sidebar { width:220px; background:linear-gradient(180deg,#667eea,#764ba2); color:#fff; padding:30px 20px; height:100vh; }
+  .sidebar .brand { font-size:1.5rem; margin-bottom:40px; }
+  .sidebar .nav-links { display:flex; flex-direction:column; gap:15px; }
+  .sidebar .nav-links a { color:#fff; text-decoration:none; padding:8px 12px; border-radius:8px; }
+  .sidebar .nav-links a.active { background: rgba(255,255,255,0.2); }
+
+  .main-content { flex:1; padding:30px; overflow-y:auto; }
+  .header h1 { font-size:2rem; margin-bottom:25px; }
+
+  .notifications-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+  }
+  .notification {
+      padding: 15px 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+  }
+  .notification.unread { border-left: 5px solid #667eea; }
+  .notification.read { opacity: 0.7; border-left: none; }
+  .notification:hover { transform: translateY(-2px); }
+  .time { font-size: 0.8rem; color: #888; margin-top: 5px; display:block; }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="brand">💰 FinTrack</div>
+    <nav class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="add-transaction.html">Add Transaction</a>
+        <a href="reports.html">Reports</a>
+        <a href="budget.html">Budget Planner</a>
+        <a href="savings.html">Savings Goals</a>
+        <a href="categories.html">Categories</a>
+        <a href="settings.html">Settings</a>
+        <a href="notifications.html" class="active">Notifications</a>
+        <a href="help.html">Help / Support</a>
+    </nav>
+</aside>
+
+<main class="main-content">
+<header class="header"><h1>Notifications</h1></header>
+<section class="content">
+<div class="notifications-list" id="notifications-list"></div>
+</section>
+</main>
+
+<script>
+function renderNotifications(){
+    const list = document.getElementById('notifications-list');
+    const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+    list.innerHTML = '';
+
+    if(notifications.length === 0){
+        list.innerHTML = `<p style="color:#888;">No notifications yet</p>`;
+        return;
+    }
+
+    // Show newest first
+    notifications.slice().reverse().forEach((notif, index) => {
+        const div = document.createElement('div');
+        div.className = 'notification ' + (notif.read ? 'read' : 'unread');
+        div.innerHTML = `<p>${notif.message}</p><span class="time">${notif.time}</span>`;
+
+        // Click to mark as read
+        div.addEventListener('click', () => {
+            notifications[notifications.length - 1 - index].read = true; // reverse index
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+            renderNotifications();
+        });
+
+        list.appendChild(div);
+    });
+}
+
+// Call on page load
+renderNotifications();
+</script>
+</body>
+</html>

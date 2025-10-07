@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FinTrack - Login / Signup</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <div class="glass-card" id="auth-card">
+
+      <!-- Logo / Branding -->
+      <div class="brand-header">
+        <h1>💰 FinTrack</h1>
+        <p>Smart Finance, Simplified</p>
+      </div>
+
+      <!-- Login Form -->
+      <div id="login-form" class="form-section active">
+        <h2>Login</h2>
+        <form class="auth-form" method="POST" action="login.php" id="loginForm">
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+
+          <!-- CAPTCHA -->
+          <div class="captcha-container">
+            <label id="captchaQuestion"></label>
+            <input type="text" name="captcha" placeholder="Enter answer" required>
+          </div>
+
+          <button type="submit" class="btn">Login</button>
+        </form>
+        <p class="switch-text">
+          Don’t have an account?
+          <a href="#" id="show-signup">Sign Up</a>
+        </p>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="signup-form" class="form-section">
+        <h2>Sign Up</h2>
+        <form id="signupForm" class="auth-form" method="POST" action="register.php">
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" id="regPassword" placeholder="Password" required>
+          <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+
+          <div class="password-strength" id="regPasswordStrength"></div>
+          <div class="error-message" id="signupError"></div>
+
+          <button type="submit" class="btn">Create Account</button>
+        </form>
+        <p class="switch-text">
+          Already have an account?
+          <a href="#" id="show-login">Login</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <script>
+    // Toggle between Login / Signup sections
+    const loginFormSec = document.getElementById("login-form");
+    const signupFormSec = document.getElementById("signup-form");
+    document.getElementById("show-signup").addEventListener("click", e => {
+      e.preventDefault();
+      loginFormSec.classList.remove("active");
+      signupFormSec.classList.add("active");
+      generateCaptcha();
+    });
+    document.getElementById("show-login").addEventListener("click", e => {
+      e.preventDefault();
+      signupFormSec.classList.remove("active");
+      loginFormSec.classList.add("active");
+      generateCaptcha();
+    });
+
+    // Password strength indicator
+    const regPassword = document.getElementById('regPassword');
+    const regConfirmPassword = document.getElementById('regConfirmPassword');
+    const regPasswordStrength = document.getElementById('regPasswordStrength');
+    const signupFormEl = document.getElementById('signupForm');
+    const signupError = document.getElementById('signupError');
+
+    regPassword.addEventListener('input', () => {
+      const val = regPassword.value;
+      if(val.length < 6){
+        regPasswordStrength.style.background = 'red';
+        regPasswordStrength.style.width = '33%';
+      } else if(val.length < 10){
+        regPasswordStrength.style.background = 'orange';
+        regPasswordStrength.style.width = '66%';
+      } else {
+        regPasswordStrength.style.background = 'green';
+        regPasswordStrength.style.width = '100%';
+      }
+    });
+
+    signupFormEl.addEventListener('submit', e => {
+      const password = regPassword.value;
+      const confirmPassword = regConfirmPassword.value;
+      if(password !== confirmPassword){
+        e.preventDefault();
+        signupError.textContent = 'Passwords do not match.';
+      } else {
+        signupError.textContent = '';
+      }
+    });
+
+    // --- Simple Math CAPTCHA ---
+    function generateCaptcha() {
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      const captchaAnswer = num1 + num2;
+      document.getElementById('captchaQuestion').textContent = `What is ${num1} + ${num2}?`;
+
+      const existing = document.getElementById('captchaAnswer');
+      if (existing) existing.value = captchaAnswer;
+      else {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'captchaAnswer';
+        input.id = 'captchaAnswer';
+        input.value = captchaAnswer;
+        document.querySelector('#login-form .auth-form').appendChild(input);
+      }
+    }
+
+    window.addEventListener('load', generateCaptcha);
+  </script>
+
+  <style>
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #764ba2;
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      z-index: 1000;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: #ff4d4d; }
+
+    .captcha-container {
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .captcha-container label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .captcha-container input {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
+
+</body>
+</html>

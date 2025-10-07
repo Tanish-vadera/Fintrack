@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrack - Savings Goals</title>
+  <link rel="stylesheet" href="savings.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">💰 FinTrack</div>
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="add-transaction.html">Add Transaction</a>
+      <a href="reports.html">Reports</a>
+      <a href="budget.html">Budget Planner</a>
+      <a href="savings.html"class="active">Savings Goals</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help / Support</a>
+
+      <div style="flex:1"></div>
+
+      <a href="#" id="logout-btn">Logout</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+      <header class="header">
+          <h1>Savings Goals</h1>
+      </header>
+
+      <section class="content">
+
+          <!-- Add New Savings Goal Form -->
+          <form id="add-goal-form" class="add-goal-form">
+              <input type="text" id="goal-name" placeholder="Savings Goal Name" required>
+              <input type="number" id="goal-target" placeholder="Target Amount" required>
+              <button type="submit">Add Goal</button>
+          </form>
+
+          <div class="savings-cards" id="savings-cards"></div>
+      </section>
+  </main>
+
+  <script>
+    // Initialize goals in localStorage if empty
+    if(!localStorage.getItem('savingsGoals')){
+        const defaultGoals = [
+            { name: 'Emergency Fund', target: 50000 },
+            { name: 'Vacation', target: 30000 },
+            { name: 'New Laptop', target: 80000 },
+            { name: 'Car', target: 400000 }
+        ];
+        localStorage.setItem('savingsGoals', JSON.stringify(defaultGoals));
+    }
+
+    // Render Savings Cards
+    function renderSavings() {
+        const goals = JSON.parse(localStorage.getItem('savingsGoals')) || [];
+        const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        const container = document.getElementById('savings-cards');
+        container.innerHTML = "";
+
+        goals.forEach(goal => {
+            const saved = transactions
+                .filter(t => t.type === "Income" && t.savingsGoal === goal.name)
+                .reduce((sum, t) => sum + Number(t.amount), 0);
+
+            const percent = Math.min((saved / goal.target) * 100, 100).toFixed(0);
+
+            const div = document.createElement('div');
+            div.className = 'savings-card';
+            div.innerHTML = `
+                <h3>${goal.name}</h3>
+                <p>Target: ₹${goal.target}</p>
+                <p>Saved: ₹${saved}</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width:${percent}%"></div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+
+        // Update Add Transaction dropdown
+        const savingsSelect = window.opener ? window.opener.document.getElementById('savings-goal') : document.getElementById('savings-goal');
+        if(savingsSelect){
+            savingsSelect.innerHTML = '<option value="None">None</option>';
+            goals.forEach(goal => {
+                const opt = document.createElement('option');
+                opt.value = goal.name;
+                opt.textContent = goal.name;
+                savingsSelect.appendChild(opt);
+            });
+        }
+    }
+
+    renderSavings();
+
+    // Add New Goal
+    document.getElementById('add-goal-form').addEventListener('submit', function(e){
+        e.preventDefault();
+        const name = document.getElementById('goal-name').value.trim();
+        const target = parseFloat(document.getElementById('goal-target').value);
+
+        if(!name || isNaN(target)) return;
+
+        const goals = JSON.parse(localStorage.getItem('savingsGoals')) || [];
+        goals.push({ name, target });
+        localStorage.setItem('savingsGoals', JSON.stringify(goals));
+
+        document.getElementById('add-goal-form').reset();
+        renderSavings();
+        alert('Savings Goal added successfully!');
+    });
+
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', () => {
+      if(confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        alert("Logged out successfully!");
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>

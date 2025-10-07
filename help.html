@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrack - Help & Support</title>
+  <link rel="stylesheet" href="help.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">💰 FinTrack</div>
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="add-transaction.html">Add Transaction</a>
+      <a href="reports.html">Reports</a>
+      <a href="budget.html">Budget Planner</a>
+      <a href="savings.html">Savings Goals</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html" class="active">Help / Support</a>
+
+      <div style="flex:1"></div>
+
+      <a href="#" id="logout-btn">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+      <header class="header">
+          <h1>Help & Support</h1>
+      </header>
+
+      <section class="content">
+          <!-- Collapsible FAQ Section -->
+          <div class="faq-section">
+              <div class="faq-item">
+                  <div class="faq-question">How do I add a new transaction?</div>
+                  <div class="faq-answer">Go to the "Add Transaction" page, fill in the details, and click "Add".</div>
+              </div>
+              <div class="faq-item">
+                  <div class="faq-question">Can I set a budget for a category?</div>
+                  <div class="faq-answer">Yes, visit the "Budget Planner" page and create or edit budgets for each category.</div>
+              </div>
+              <div class="faq-item">
+                  <div class="faq-question">How can I track my savings goals?</div>
+                  <div class="faq-answer">Check the "Savings Goals" page to see your progress for each goal.</div>
+              </div>
+              <div class="faq-item">
+                  <div class="faq-question">How do I change my account settings?</div>
+                  <div class="faq-answer">Visit the "Settings" page to update your profile, enable notifications, or logout.</div>
+              </div>
+          </div>
+
+          <!-- Contact Support -->
+          <div class="contact-support">
+              <h3>Contact Support</h3>
+              <p>If you need further assistance, email us at <a href="mailto:support@fintrack.com">support@fintrack.com</a> or call <strong>+91 98765 43210</strong>.</p>
+          </div>
+      </section>
+  </main>
+
+  <!-- JS -->
+  <script>
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+      const question = item.querySelector('.faq-question');
+      const answer = item.querySelector('.faq-answer');
+      question.addEventListener('click', () => {
+        answer.classList.toggle('show');
+      });
+    });
+
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', () => {
+      if(confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        alert("Logged out successfully!");
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+
+  <style>
+    .faq-item { border-bottom: 1px solid #ccc; margin-bottom: 10px; }
+    .faq-question { cursor: pointer; padding: 10px; background: #f7f7f7; }
+    .faq-answer { display: none; padding: 10px; }
+    .faq-answer.show { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+
+</body>
+</html>
